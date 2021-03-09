@@ -1,3 +1,3 @@
 # Stonks
-Niranjan: StockExchange, Brokerage, Stock
+Niranjan: StockExchange, Brokerage, Stock   
 Leo: PriceComparator, Trader, TradeOrder
