@@ -15,8 +15,26 @@ public class Stock
     private int volume;
     private PriorityQueue<TradeOrder> buyOrders, sellOrders;
 
-    // TODO complete class
 
+    /**
+     *
+     * Constructs a new stock with a given symbol, company name, and starting price. Sets low price, high price, and last price to the same opening price. Sets "day" volume to zero. Initializes a priority qieue for sell orders to an empty PriorityQueue with a PriceComparator configured for comparing orders in ascending order; initializes a priority qieue for buy orders to an empty PriorityQueue with a PriceComparator configured for comparing orders in descending order.
+     * @param symbol the stock symbol
+     * @param name full company name
+     * @param price opening price for this stock
+     */
+    public Stock(String symbol, String name, double price)
+    {
+        stockSymbol = symbol;
+        companyName = name;
+        loPrice = price;
+        hiPrice = price;
+        lastPrice = price;
+        volume = 0;
+        sellOrders = new PriorityQueue<>();
+        buyOrders = new PriorityQueue<>();
+
+    }
     
     //
     // The following are for test purposes only
@@ -50,6 +68,11 @@ public class Stock
     protected int getVolume()
     {
         return volume;
+    }
+
+    public String getQuote()
+    {
+        return companyName = " (" + stockSymbol + ")\nPrice: "+lastPrice + "\thi: " + hiPrice + "\tlo: " + loPrice + "\tvol: " + volume +
     }
 
     protected PriorityQueue<TradeOrder> getBuyOrders()
