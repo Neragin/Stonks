@@ -59,12 +59,86 @@ public class Stock {
 
     }
 
+    /**
+     * Places a trading order for this stock.
+     * 
+     * @param order - a trading order to be placed.
+     */
     public void placeOrder(TradeOrder order) {
-
+        String msg;
+        if (order != null && order.isLimit()) {
+            if (order.isSell()) {
+                msg = "New Order:\t" + "Sell " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
+                        + " shares at " + order.getPrice();
+            } else if (order.isBuy()) {
+                msg = "New Order:\t" + "Buy " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
+                        + " shares at " + order.getPrice();
+            }
+        } else if (order != null && order.isMarket()) {
+            if (order.isSell()) {
+                msg = "New Order:\t" + "Sell " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
+                        + " shares at market";
+            } else if (order.isBuy()) {
+                msg = "New Order:\t" + "Buy " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
+                        + " shares at market";
+            }
+        }
+        order.getTrader().recieveMessage(msg);
     }
 
+    /**
+     * Executes as many pending orders as possible.
+     */
     protected void executeOrders() {
+        TradeOrder topSell = sellOrders.peek();
+        TradeOrder topBuy = buyOrders.peek();
 
+        while (topSell.isMarket() || topBuy.isMarket() || topSell.price() <= topBuy.price()) {
+
+            if (topSell.isLimit() && topBuy.isLimit() && topBuy.getPrice() >= topSell.getPrice()) {
+                execution(topSell, topBuy, topSell.getPrice());
+            } else if (topSell.isMarket() && topBuy.isMarket()) {
+                execution(topSell, topBuy, lastPrice);
+            } else if (topSell.isLimit() && topBuy.isMarket()) {
+                execution(topSell, topBuy, topSell.getPrice())
+            } else if (topBuy.isLimit() && topSell.isMarket()) {
+                execution(topSell, topBuy, topBuy.getPrice())
+            }
+        }
+    }
+
+    /**
+     * Helper function to carry out an order. Sends message, updates day prices,
+     * completes and updates pending orders.
+     * 
+     * @param topSell - Sell order with the lowest price
+     * @param topBuy  - Buy order with the highest price
+     * @param price   - Actual price set for the transaction
+     */
+    protected void execution(TradeOrder topSell, TradeOrder topBuy, double price) {
+        int numShares = topSell.getShares() > topBuy.getShares() ? topBuy.getShares() : topSell.getShares();
+        String sellMsg = "You sold:\t" + numShares + " " + topSell.getSymbol() + "at " + money.applyPattern(price);
+        String buyMsg = "You bought:\t" + numShares + " " + topSell.getSymbol() + "at " + money.applyPattern(price);
+
+        topBuy.getTrader().recieveMessage(buyMsg);
+        topSell.getTrader().recieveMessage(sellMsg);
+
+        volume += numShares;
+        hiPrice = price > getHiPrice() ? price : getHiPrice();
+        loPrice = price < getLoPrice() ? price : getLoPrice();
+        lastPrice = price;
+
+        topSell.subtractShares(numShares);
+        topBuy.subtractShares(numShares);
+
+        if (topSell.getShares() == 0 && topBuy.getShares() == 0) {
+            buyOrders.poll();
+            sellOrders.poll();
+        } else if (topSell.getShares() == 0) {
+            sellOrders.poll();
+        } else if (topBuy.getShares() == 0) {
+            buyOrders.poll();
+        }
     }
 
     //
