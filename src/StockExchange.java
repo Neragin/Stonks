@@ -11,9 +11,50 @@ public class StockExchange
 {
     private Map<String, Stock> listedStocks;
     
-    // TODO complete class
+    public StockExchange()
+    {
+        listedStocks = new HashMap<>();
+    }
 
-    
+
+    /**
+     * Adds a new stock with given parameters to the listen stocks.
+     *
+     *
+     * @param symbol stock symbol
+     * @param name full company name
+     * @param price opening stock price
+     */
+    public void listStock(String symbol, String name, double price)
+    {
+        listedStocks.put(symbol, new Stock(symbol, name, price));
+    }
+
+
+    /**
+     * Returns a quote for a given stock. If the symbol (ex. XYZ) is not found in the exchange's list of stocks, the string that is returned should be "XYZ not found".
+     * @param symbol Stock symbol.
+     * @return a text message that contains the quote.
+     */
+    public String getQuote(String symbol)
+    {
+        if ( !listedStocks.containsKey(symbol) )
+        {
+            return symbol + " not found";
+        }
+        return listedStocks.get(symbol).getQuote();
+    }
+
+    public void placeOrder(TradeOrder order)
+    {
+        if ( !listedStocks.containsKey(order.getSymbol()) )
+        {
+            return order.getSymbol + " not found";
+        }
+        listedStocks.get(order.getSymbol()).placeOrder();
+    }
+
+
     //
     // The following are for test purposes only
     //
