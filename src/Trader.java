@@ -70,35 +70,67 @@ public class Trader implements Comparable<Trader> {
         return password;
     }
 
+    /**
+     * Requests a quote for a given stock symbol from the brokerage by calling
+     * brokerage's getQuote.
+     * 
+     * @param symbol - a stock symbol for which a quote is requested.
+     */
     public void getQuote(String symbol) {
         brokerage.getQuote(symbol, this);
     }
 
+    /**
+     * Returns true if this trader has any messages in its mailbox.
+     * 
+     * @return true if this trader has messages; false otherwise.
+     */
     public boolean hasMessages() {
         return mailbox.isEmpty();
     }
 
+    /**
+     * Creates a new TraderWindow for this trader and saves a reference to it in
+     * myWindow. Removes and displays all the messages, if any, from this trader's
+     * mailbox by calling myWindow.showMessage(msg) for each message.
+     */
     public void openWindow() {
         myWindow = new TraderWindow(this);
-        for (String msg : mailbox) {
-            myWindow.showMessage(msg);
+        for (int i = 0; i < mailbox.size(); i++) {
+            myWindow.showMessage(mailbox.poll());
         }
     }
 
+    /**
+     * Places a given order with the brokerage by calling brokerage's placeOrder.
+     * 
+     * @param order - a trading order to be placed.
+     */
     public void placeOrder(TradeOrder order) {
         brokerage.placeOrder(order);
     }
 
+    /**
+     * Logs out this trader. Calls brokerage's logout for this trader. Sets myWindow
+     * to null (this method is called from a TraderWindow's window listener when the
+     * "close window" button is clicked).
+     */
     public void quit() {
         brokerage.logout(this);
         myWindow = null;
     }
 
+    /**
+     * Adds msg to this trader's mailbox and displays all messages. If this trader
+     * is logged in (myWindow is not null) removes and shows all the messages in the
+     * mailbox by calling myWindow.showMessage(msg) for each msg in the mailbox.
+     * 
+     */
     public void receiveMessage(String msg) {
         if (myWindow != null) {
             mailbox.add(msg);
-            for (String m : mailbox) {
-                myWindow.showMessage(m);
+            for (int i = 0; i < mailbox.size(); i++) {
+                myWindow.showMessage(mailbox.poll());
             }
         }
     }
