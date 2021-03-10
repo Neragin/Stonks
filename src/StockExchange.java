@@ -1,5 +1,6 @@
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a stock exchange. A <code>StockExchange</code> keeps a
@@ -10,7 +11,8 @@ import java.util.*;
 public class StockExchange
 {
     private Map<String, Stock> listedStocks;
-    
+
+
     public StockExchange()
     {
         listedStocks = new HashMap<>();
@@ -20,10 +22,9 @@ public class StockExchange
     /**
      * Adds a new stock with given parameters to the listen stocks.
      *
-     *
      * @param symbol stock symbol
-     * @param name full company name
-     * @param price opening stock price
+     * @param name   full company name
+     * @param price  opening stock price
      */
     public void listStock(String symbol, String name, double price)
     {
@@ -33,6 +34,7 @@ public class StockExchange
 
     /**
      * Returns a quote for a given stock. If the symbol (ex. XYZ) is not found in the exchange's list of stocks, the string that is returned should be "XYZ not found".
+     *
      * @param symbol Stock symbol.
      * @return a text message that contains the quote.
      */
@@ -44,6 +46,7 @@ public class StockExchange
         }
         return listedStocks.get(symbol).getQuote();
     }
+
 
     public void placeOrder(TradeOrder order)
     {
@@ -62,14 +65,15 @@ public class StockExchange
     {
         return listedStocks;
     }
-    
+
+
     /**
      * <p>
      * A generic toString implementation that uses reflection to print names and
      * values of all fields <em>declared in this class</em>. Note that
      * superclass fields are left out of this implementation.
      * </p>
-     * 
+     *
      * @return a string representation of this StockExchange.
      */
     public String toString()
@@ -83,12 +87,12 @@ public class StockExchange
         {
             try
             {
-                str += separator + field.getType().getName() + " "
-                    + field.getName() + ":" + field.get( this );
+                str += separator + field.getType().getName() + " " + field
+                    .getName() + ":" + field.get(this);
             }
             catch ( IllegalAccessException ex )
             {
-                System.out.println( ex );
+                System.out.println(ex);
             }
 
             separator = ", ";

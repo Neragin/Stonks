@@ -1,18 +1,20 @@
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents a brokerage.
  */
-public class Brokerage implements Login
+public class Brokerage
+    implements Login
 {
     private Map<String, Trader> traders;
-    private Set<Trader> loggedTraders;
-    private StockExchange exchange;
+    private Set<Trader>         loggedTraders;
+    private StockExchange       exchange;
 
     // TODO complete class
 
-    
+
     //
     // The following are for test purposes only
     //
@@ -21,15 +23,18 @@ public class Brokerage implements Login
         return traders;
     }
 
+
     protected Set<Trader> getLoggedTraders()
     {
         return loggedTraders;
     }
 
+
     protected StockExchange getExchange()
     {
         return exchange;
     }
+
 
     /**
      * <p>
@@ -37,7 +42,7 @@ public class Brokerage implements Login
      * values of all fields <em>declared in this class</em>. Note that
      * superclass fields are left out of this implementation.
      * </p>
-     * 
+     *
      * @return a string representation of this Brokerage.
      */
     public String toString()
@@ -51,12 +56,12 @@ public class Brokerage implements Login
         {
             try
             {
-                str += separator + field.getType().getName() + " "
-                    + field.getName() + ":" + field.get( this );
+                str += separator + field.getType().getName() + " " + field
+                    .getName() + ":" + field.get(this);
             }
             catch ( IllegalAccessException ex )
             {
-                System.out.println( ex );
+                System.out.println(ex);
             }
 
             separator = ", ";
