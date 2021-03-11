@@ -1,20 +1,18 @@
-import java.lang.reflect.Field;
+import java.util.*;
+import java.lang.reflect.*;
 import java.text.DecimalFormat;
-import java.util.PriorityQueue;
 
 /**
  * Represents a stock in the SafeTrade project
  */
-public class Stock
-{
+public class Stock {
     public static DecimalFormat money = new DecimalFormat("0.00");
 
     private String stockSymbol;
     private String companyName;
     private double loPrice, hiPrice, lastPrice;
-    private int                       volume;
+    private int volume;
     private PriorityQueue<TradeOrder> buyOrders, sellOrders;
-
 
     /**
      * Constructs a new stock with a given symbol, company name, and starting price.
@@ -24,13 +22,12 @@ public class Stock
      * ascending order; initializes a priority qieue for buy orders to an empty
      * PriorityQueue with a PriceComparator configured for comparing orders in
      * descending order.
-     *
+     * 
      * @param symbol - the stock symbol.
      * @param name   - full company name.
      * @param price  - opening price for this stock.
      */
-    public Stock(String symbol, String name, double price)
-    {
+    public Stock(String symbol, String name, double price) {
         volume = 0;
         stockSymbol = symbol;
         companyName = name;
@@ -42,96 +39,143 @@ public class Stock
 
     }
 
-
     /**
      * Returns a quote string for this stock.
-     *
+     * 
      * @return the quote for this stock.
      */
-    public String getQuote()
-    {
-        String quote =
-            companyName + " (" + stockSymbol + ")" + "\n Price: " + getLastPrice() + "\thi: " + getHiPrice() + "\tlo: " + getLoPrice() + "\tvol: " + getVolume() + "\n ";
+    public String getQuote() {
+        String quote = companyName + " (" + stockSymbol + ")" + "\n Price: " + getLastPrice() + "\thi: " + getHiPrice()
+                + "\tlo: " + getLoPrice() + "\tvol: " + getVolume() + "\n ";
 
         TradeOrder Ask = sellOrders.peek();
         TradeOrder Bid = sellOrders.peek();
 
-        String askString = Ask == null ?
-            "Ask: none\t" :
-            "Ask: " + Ask.getPrice() + " size: " + Ask.getShares() + "\t";
+        String askString = Ask == null ? "Ask: none\t" : "Ask: " + Ask.getPrice() + " size: " + Ask.getShares() + "\t";
 
-        String bidString = Bid == null ?
-            "Bid: none" :
-            "Bid: " + Bid.getPrice() + " size: " + Bid.getShares();
+        String bidString = Bid == null ? "Bid: none" : "Bid: " + Bid.getPrice() + " size: " + Bid.getShares();
 
         return quote + askString + bidString;
 
     }
 
-
-    public void placeOrder(TradeOrder order)
-    {
-
+    /**
+     * Places a trading order for this stock.
+     * 
+     * @param order - a trading order to be placed.
+     */
+    public void placeOrder(TradeOrder order) {
+        String msg;
+        if (order != null && order.isLimit()) {
+            if (order.isSell()) {
+                msg = "New Order:\t" + "Sell " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
+                        + " shares at " + order.getPrice();
+            } else if (order.isBuy()) {
+                msg = "New Order:\t" + "Buy " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
+                        + " shares at " + order.getPrice();
+            }
+        } else if (order != null && order.isMarket()) {
+            if (order.isSell()) {
+                msg = "New Order:\t" + "Sell " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
+                        + " shares at market";
+            } else if (order.isBuy()) {
+                msg = "New Order:\t" + "Buy " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
+                        + " shares at market";
+            }
+        }
+        order.getTrader().recieveMessage(msg);
     }
 
+    /**
+     * Executes as many pending orders as possible.
+     */
+    protected void executeOrders() {
+        TradeOrder topSell = sellOrders.peek();
+        TradeOrder topBuy = buyOrders.peek();
 
-    protected void executeOrders()
-    {
+        while (topSell.isMarket() || topBuy.isMarket() || topSell.price() <= topBuy.price()) {
 
+            if (topSell.isLimit() && topBuy.isLimit() && topBuy.getPrice() >= topSell.getPrice()) {
+                execution(topSell, topBuy, topSell.getPrice());
+            } else if (topSell.isMarket() && topBuy.isMarket()) {
+                execution(topSell, topBuy, lastPrice);
+            } else if (topSell.isLimit() && topBuy.isMarket()) {
+                execution(topSell, topBuy, topSell.getPrice())
+            } else if (topBuy.isLimit() && topSell.isMarket()) {
+                execution(topSell, topBuy, topBuy.getPrice())
+            }
+        }
+    }
+
+    /**
+     * Helper function to carry out an order. Sends message, updates day prices,
+     * completes and updates pending orders.
+     * 
+     * @param topSell - Sell order with the lowest price
+     * @param topBuy  - Buy order with the highest price
+     * @param price   - Actual price set for the transaction
+     */
+    protected void execution(TradeOrder topSell, TradeOrder topBuy, double price) {
+        int numShares = topSell.getShares() > topBuy.getShares() ? topBuy.getShares() : topSell.getShares();
+        String sellMsg = "You sold:\t" + numShares + " " + topSell.getSymbol() + "at " + money.applyPattern(price);
+        String buyMsg = "You bought:\t" + numShares + " " + topSell.getSymbol() + "at " + money.applyPattern(price);
+
+        topBuy.getTrader().recieveMessage(buyMsg);
+        topSell.getTrader().recieveMessage(sellMsg);
+
+        volume += numShares;
+        hiPrice = price > getHiPrice() ? price : getHiPrice();
+        loPrice = price < getLoPrice() ? price : getLoPrice();
+        lastPrice = price;
+
+        topSell.subtractShares(numShares);
+        topBuy.subtractShares(numShares);
+
+        if (topSell.getShares() == 0 && topBuy.getShares() == 0) {
+            buyOrders.poll();
+            sellOrders.poll();
+        } else if (topSell.getShares() == 0) {
+            sellOrders.poll();
+        } else if (topBuy.getShares() == 0) {
+            buyOrders.poll();
+        }
     }
 
     //
     // The following are for test purposes only
     //
 
-
-    protected String getStockSymbol()
-    {
+    protected String getStockSymbol() {
         return stockSymbol;
     }
 
-
-    protected String getCompanyName()
-    {
+    protected String getCompanyName() {
         return companyName;
     }
 
-
-    protected double getLoPrice()
-    {
+    protected double getLoPrice() {
         return loPrice;
     }
 
-
-    protected double getHiPrice()
-    {
+    protected double getHiPrice() {
         return hiPrice;
     }
 
-
-    protected double getLastPrice()
-    {
+    protected double getLastPrice() {
         return lastPrice;
     }
 
-
-    protected int getVolume()
-    {
+    protected int getVolume() {
         return volume;
     }
 
-
-    protected PriorityQueue<TradeOrder> getBuyOrders()
-    {
+    protected PriorityQueue<TradeOrder> getBuyOrders() {
         return buyOrders;
     }
 
-
-    protected PriorityQueue<TradeOrder> getSellOrders()
-    {
+    protected PriorityQueue<TradeOrder> getSellOrders() {
         return sellOrders;
     }
-
 
     /**
      * <p>
@@ -139,25 +183,19 @@ public class Stock
      * values of all fields <em>declared in this class</em>. Note that superclass
      * fields are left out of this implementation.
      * </p>
-     *
+     * 
      * @return a string representation of this Stock.
      */
-    public String toString()
-    {
+    public String toString() {
         String str = this.getClass().getName() + "[";
         String separator = "";
 
         Field[] fields = this.getClass().getDeclaredFields();
 
-        for ( Field field : fields )
-        {
-            try
-            {
-                str += separator + field.getType().getName() + " " + field
-                    .getName() + ":" + field.get(this);
-            }
-            catch ( IllegalAccessException ex )
-            {
+        for (Field field : fields) {
+            try {
+                str += separator + field.getType().getName() + " " + field.getName() + ":" + field.get(this);
+            } catch (IllegalAccessException ex) {
                 System.out.println(ex);
             }
 
