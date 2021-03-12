@@ -1,6 +1,8 @@
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Represents a brokerage.
@@ -12,8 +14,16 @@ public class Brokerage
     private Set<Trader>         loggedTraders;
     private StockExchange       exchange;
 
-    // TODO complete class
 
+    /**
+     * @param exchange a stock exchange
+     */
+    public Brokerage(StockExchange exchange)
+    {
+        this.exchange = exchange;
+        traders = new TreeMap<>();
+        loggedTraders = new TreeSet<>();
+    }
 
     //
     // The following are for test purposes only
@@ -68,5 +78,38 @@ public class Brokerage
         }
 
         return str + "]";
+    }
+
+
+    /**
+     * Tries to register a new user with a given screen name
+     * and password;
+     *
+     * @param name     the screen name of the user.
+     * @param password the password for the user.
+     * @return 0 if successful, or an error code (a negative integer) if failed:<br>
+     * -1 -- invalid screen name (must be 4-10 chars)<br>
+     * -2 -- invalid password (must be 2-10 chars)<br>
+     * -3 -- the screen name is already taken.
+     */
+    @Override public int addUser(String name, String password)
+    {
+        return 0;
+    }
+
+
+    /**
+     * Tries to login a user with a given screen name and password;
+     *
+     * @param name     the screen name of the user.
+     * @param password the password for the user.
+     * @return 0 if successful, or an error code (a negative integer) if failed:<br>
+     * -1 -- screen name not found<br>
+     * -2 -- invalid password<br>
+     * -3 -- user is already logged in.
+     */
+    @Override public int login(String name, String password)
+    {
+        return 0;
     }
 }
