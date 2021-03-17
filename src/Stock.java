@@ -65,7 +65,7 @@ public class Stock {
      * @param order - a trading order to be placed.
      */
     public void placeOrder(TradeOrder order) {
-        String msg;
+        String msg = "";
         if (order != null && order.isLimit()) {
             if (order.isSell()) {
                 msg = "New Order:\t" + "Sell " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
@@ -83,7 +83,7 @@ public class Stock {
                         + " shares at market";
             }
         }
-        order.getTrader().recieveMessage(msg);
+        order.getTrader().receiveMessage(msg);
     }
 
     /**
@@ -93,16 +93,16 @@ public class Stock {
         TradeOrder topSell = sellOrders.peek();
         TradeOrder topBuy = buyOrders.peek();
 
-        while (topSell.isMarket() || topBuy.isMarket() || topSell.price() <= topBuy.price()) {
+        while (topSell.isMarket() || topBuy.isMarket() || topSell.getPrice() <= topBuy.getPrice()) {
 
             if (topSell.isLimit() && topBuy.isLimit() && topBuy.getPrice() >= topSell.getPrice()) {
                 execution(topSell, topBuy, topSell.getPrice());
             } else if (topSell.isMarket() && topBuy.isMarket()) {
                 execution(topSell, topBuy, lastPrice);
             } else if (topSell.isLimit() && topBuy.isMarket()) {
-                execution(topSell, topBuy, topSell.getPrice())
+                execution(topSell, topBuy, topSell.getPrice());
             } else if (topBuy.isLimit() && topSell.isMarket()) {
-                execution(topSell, topBuy, topBuy.getPrice())
+                execution(topSell, topBuy, topBuy.getPrice());
             }
         }
     }
@@ -117,11 +117,12 @@ public class Stock {
      */
     protected void execution(TradeOrder topSell, TradeOrder topBuy, double price) {
         int numShares = topSell.getShares() > topBuy.getShares() ? topBuy.getShares() : topSell.getShares();
-        String sellMsg = "You sold:\t" + numShares + " " + topSell.getSymbol() + "at " + money.applyPattern(price);
+        String sellMsg =
+            "You sold:\t" + numShares + " " + topSell.getSymbol() + "at " + money.applyPattern(price);
         String buyMsg = "You bought:\t" + numShares + " " + topSell.getSymbol() + "at " + money.applyPattern(price);
 
-        topBuy.getTrader().recieveMessage(buyMsg);
-        topSell.getTrader().recieveMessage(sellMsg);
+        topBuy.getTrader().receiveMessage(buyMsg);
+        topSell.getTrader().receiveMessage(sellMsg);
 
         volume += numShares;
         hiPrice = price > getHiPrice() ? price : getHiPrice();
