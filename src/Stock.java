@@ -117,9 +117,11 @@ public class Stock {
      */
     protected void execution(TradeOrder topSell, TradeOrder topBuy, double price) {
         int numShares = topSell.getShares() > topBuy.getShares() ? topBuy.getShares() : topSell.getShares();
+        money.applyPattern(Double.toString(price));
         String sellMsg =
-            "You sold:\t" + numShares + " " + topSell.getSymbol() + "at " + money.applyPattern(price);
-        String buyMsg = "You bought:\t" + numShares + " " + topSell.getSymbol() + "at " + money.applyPattern(price);
+            "You sold:\t" + numShares + " " + topSell.getSymbol() + "at " + price;
+        String buyMsg =
+            "You bought:\t" + numShares + " " + topSell.getSymbol() + "at " + price;
 
         topBuy.getTrader().receiveMessage(buyMsg);
         topSell.getTrader().receiveMessage(sellMsg);
