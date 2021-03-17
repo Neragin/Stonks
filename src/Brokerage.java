@@ -83,6 +83,13 @@ public class Brokerage
         exchange.placeOrder(order);
     }
 
+    public void getQuote(String symbol, Trader trader)
+    {
+        String quote = exchange.getQuote(symbol);
+        trader.receiveMessage(quote);
+
+    }
+
 
     //
     // The following are for test purposes only

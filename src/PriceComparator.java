@@ -58,8 +58,8 @@ public class PriceComparator
         else
         {
             int difference = ascending ?
-                (int)(order1.price() - order2.price()) :
-                (int)(order2.price() - order1.price());
+                (int)(order1.getPrice() - order2.getPrice()) :
+                (int)(order2.getPrice() - order1.getPrice());
             return difference;
         }
     }
