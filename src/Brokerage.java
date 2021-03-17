@@ -25,6 +25,65 @@ public class Brokerage
         loggedTraders = new TreeSet<>();
     }
 
+
+    public int addUser(String name, String password)
+    {
+        if ( traders.get(name) != null )
+        {
+            return -3;
+        }
+        else if ( name.length() > 4 && name.length() < 10 )
+        {
+            return -1;
+        }
+        else if ( password.length() < 10 && password.length() > 2 )
+        {
+            return -2;
+        }
+        else
+        {
+            traders.put(name, new Trader(this, name, password));
+            return 0;
+        }
+    }
+
+
+    public int login(String name, String password)
+    {
+        Trader trader = traders.get(name);
+        if ( loggedTraders.contains(trader) )
+        {
+            return -3;
+        }
+        else if ( trader == null )
+        {
+            return -1;
+        }
+        else if ( !trader.getPassword().equals(password) )
+        {
+            return -2;
+        }
+        else
+        {
+            loggedTraders.add(trader);
+            trader.receiveMessage("Welcome to SafeTrade!");
+            trader.openWindow();
+            return 0;
+        }
+    }
+
+
+    public void logout(Trader trader)
+    {
+        loggedTraders.remove(trader);
+    }
+
+    public void placeOrder(TradeOrder order)
+    {
+        exchange.placeOrder(order);
+    }
+
+
     //
     // The following are for test purposes only
     //
@@ -79,6 +138,7 @@ public class Brokerage
 
         return str + "]";
     }
+}
 
 
     /**
@@ -92,10 +152,6 @@ public class Brokerage
      * -2 -- invalid password (must be 2-10 chars)<br>
      * -3 -- the screen name is already taken.
      */
-    @Override public int addUser(String name, String password)
-    {
-        return 0;
-    }
 
 
     /**
@@ -108,8 +164,3 @@ public class Brokerage
      * -2 -- invalid password<br>
      * -3 -- user is already logged in.
      */
-    @Override public int login(String name, String password)
-    {
-        return 0;
-    }
-}
