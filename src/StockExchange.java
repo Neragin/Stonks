@@ -55,7 +55,7 @@ public class StockExchange
 
             System.out.println(order.getSymbol() + " not found");
         }
-        listedStocks.get(order.getSymbol()).placeOrder();
+        listedStocks.get(order.getSymbol()).placeOrder(order);
     }
 
 
