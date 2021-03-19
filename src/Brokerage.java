@@ -55,7 +55,7 @@ public class Brokerage
         {
             return -1;
         }
-        if ( loggedTraders.contains(trader) )
+        else if ( loggedTraders.contains(trader) )
         {
             return -3;
         }

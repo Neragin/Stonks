@@ -1,4 +1,5 @@
 import java.lang.reflect.Field;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 /**
@@ -26,6 +27,7 @@ public class Trader
         this.brokerage = brokerage;
         this.screenName = name;
         this.password = pswd;
+        mailbox = new PriorityQueue<>();
     }
 
 
