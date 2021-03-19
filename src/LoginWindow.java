@@ -13,7 +13,7 @@ public class LoginWindow
     private static JFrame thisWindow;
     private static Login  server;
 
-    private JTextField nameField;
+    private JTextField     nameField;
     private JPasswordField passwordField;
 
 
@@ -97,7 +97,8 @@ public class LoginWindow
                 else
                     errorMsg = "Unknown error code";
 
-                JOptionPane.showMessageDialog(thisWindow,
+                JOptionPane.showMessageDialog(
+                    thisWindow,
                     errorMsg,
                     "Login failed",
                     JOptionPane.ERROR_MESSAGE);
@@ -143,7 +144,8 @@ public class LoginWindow
 
             final String optionNames[] = { "Register", "Cancel" };
 
-            if ( JOptionPane.showOptionDialog(thisWindow,
+            if ( JOptionPane.showOptionDialog(
+                thisWindow,
                 fieldsPanel,
                 "New user registration",
                 JOptionPane.OK_CANCEL_OPTION,
@@ -187,7 +189,8 @@ public class LoginWindow
 
             if ( result != 0 )
             {
-                JOptionPane.showMessageDialog(thisWindow,
+                JOptionPane.showMessageDialog(
+                    thisWindow,
                     errorMsg,
                     "Registration failed",
                     JOptionPane.ERROR_MESSAGE);
@@ -197,7 +200,8 @@ public class LoginWindow
             }
             else
             {
-                JOptionPane.showMessageDialog(thisWindow,
+                JOptionPane.showMessageDialog(
+                    thisWindow,
                     "Added " + name,
                     "Registration successful",
                     JOptionPane.INFORMATION_MESSAGE);

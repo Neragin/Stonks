@@ -213,5 +213,4 @@ public class Trader
         return str + "]";
     }
 
-
 }

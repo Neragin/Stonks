@@ -1,4 +1,4 @@
-import org.junit.*;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -165,8 +165,7 @@ public class JUSafeTradeTest
             marketOrder,
             numShares,
             price);
-        assertTrue(
-            "<< TradeOrder: " + to
+        assertTrue("<< TradeOrder: " + to
                 .getShares() + " should be " + numShares + ">>",
             numShares == to.getShares() || (numShares - numToSubtract) == to
                 .getShares());
