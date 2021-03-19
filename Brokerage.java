@@ -51,14 +51,15 @@ public class Brokerage
     public int login(String name, String password)
     {
         Trader trader = traders.get(name);
-        if ( loggedTraders.contains(trader) )
+        if ( trader == null )
+        {
+        return -1;
+        }
+        else if ( loggedTraders.contains(trader) )
         {
             return -3;
         }
-        else if ( trader == null )
-        {
-            return -1;
-        }
+
         else if ( !trader.getPassword().equals(password) )
         {
             return -2;
