@@ -83,7 +83,7 @@ public class LoginWindow
 
         private void tryLogin(String name, String password)
         {
-            String errorMsg = "";
+            String errorMsg;
             int result = server.login(name, password);
 
             if ( result < 0 )

@@ -22,7 +22,7 @@ public class Stock {
      * ascending order; initializes a priority qieue for buy orders to an empty
      * PriorityQueue with a PriceComparator configured for comparing orders in
      * descending order.
-     * 
+     *
      * @param symbol - the stock symbol.
      * @param name   - full company name.
      * @param price  - opening price for this stock.
@@ -34,14 +34,14 @@ public class Stock {
         loPrice = hiPrice = lastPrice = price;
         PriceComparator asc = new PriceComparator();
         PriceComparator desc = new PriceComparator(false);
-        buyOrders = new PriorityQueue<TradeOrder>(0, desc);
-        sellOrders = new PriorityQueue<TradeOrder>(0, asc);
+        buyOrders = new PriorityQueue<TradeOrder>(2, desc);
+        sellOrders = new PriorityQueue<TradeOrder>(2, asc);
 
     }
 
     /**
      * Returns a quote string for this stock.
-     * 
+     *
      * @return the quote for this stock.
      */
     public String getQuote() {
@@ -61,7 +61,7 @@ public class Stock {
 
     /**
      * Places a trading order for this stock.
-     * 
+     *
      * @param order - a trading order to be placed.
      */
     public void placeOrder(TradeOrder order) {
@@ -83,7 +83,10 @@ public class Stock {
                         + " shares at market";
             }
         }
-        order.getTrader().receiveMessage(msg);
+        if ( order != null )
+        {
+            order.getTrader().receiveMessage(msg);
+        }
     }
 
     /**
@@ -110,7 +113,7 @@ public class Stock {
     /**
      * Helper function to carry out an order. Sends message, updates day prices,
      * completes and updates pending orders.
-     * 
+     *
      * @param topSell - Sell order with the lowest price
      * @param topBuy  - Buy order with the highest price
      * @param price   - Actual price set for the transaction
@@ -171,6 +174,12 @@ public class Stock {
     protected int getVolume() {
         return volume;
     }
+
+//    public String getQuote()
+//    {
+//        return companyName = " (" + stockSymbol + ")\nPrice: "+lastPrice +
+//            "\thi: " + hiPrice + "\tlo: " + loPrice + "\tvol: " + volume;
+//    }
 
     protected PriorityQueue<TradeOrder> getBuyOrders() {
         return buyOrders;
