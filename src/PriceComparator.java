@@ -33,7 +33,7 @@ public class PriceComparator
      *
      * @param order1 - the first order
      * @param order2 - the second order
-     * @returns 0 if both orders are market orders; -1 if order1 is market and
+     * @return 0 if both orders are market orders; -1 if order1 is market and
      * order2 is limit; 1 if order1 is limit and order2 is market; the
      * difference in prices, rounded to the nearest cent, if both order1
      * and order2 are limit orders. In the latter case, the difference
