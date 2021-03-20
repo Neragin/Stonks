@@ -45,8 +45,8 @@ public class Stock {
      * @return the quote for this stock.
      */
     public String getQuote() {
-        String quote = companyName + " (" + stockSymbol + ")" + "\n Price: " + getLastPrice() + "\thi: " + getHiPrice()
-                + "\tlo: " + getLoPrice() + "\tvol: " + getVolume() + "\n ";
+        String quote = companyName + " (" + stockSymbol + ")" + "\nPrice: " + getLastPrice() + "\thi: " + getHiPrice()
+                + "\tlo: " + getLoPrice() + "\tvol: " + getVolume() + "\n";
 
         TradeOrder Ask = sellOrders.peek();
         TradeOrder Bid = sellOrders.peek();
@@ -87,7 +87,11 @@ public class Stock {
                 buyOrders.add(order);
             }
         }
-        order.getTrader().receiveMessage(msg);
+        if (order != null)
+        {
+            order.getTrader().receiveMessage(msg);
+        }
+        executeOrders();
     }
 
     /**
@@ -97,7 +101,7 @@ public class Stock {
         TradeOrder topSell = sellOrders.peek();
         TradeOrder topBuy = buyOrders.peek();
 
-        while (topSell.isMarket() || topBuy.isMarket() || topSell.getPrice() <= topBuy.getPrice()) {
+        while (topSell != null && topBuy != null && !(topBuy.isLimit() && topSell.isLimit() && topSell.getPrice() > topBuy.getPrice())) {
 
             if (topSell.isLimit() && topBuy.isLimit() && topBuy.getPrice() >= topSell.getPrice()) {
                 execution(topSell, topBuy, topSell.getPrice());
@@ -119,13 +123,19 @@ public class Stock {
      * @param topBuy  - Buy order with the highest price
      * @param price   - Actual price set for the transaction
      */
-    protected void execution(TradeOrder topSell, TradeOrder topBuy, double price) {
+    public void execution(TradeOrder topSell, TradeOrder topBuy, double price) {
         int numShares = topSell.getShares() > topBuy.getShares() ? topBuy.getShares() : topSell.getShares();
         money.applyPattern(Double.toString(price));
+        double amtSell = topSell.getShares();
+        double amtBuy = topBuy.getShares();
+
+        money.applyPattern(Double.toString(amtSell));
+        money.applyPattern(Double.toString(amtBuy));
+
         String sellMsg =
-            "You sold:\t" + numShares + " " + topSell.getSymbol() + "at " + price;
+            "You sold:\t" + numShares + " " + topSell.getSymbol() + "at " + price + " amt " + amtSell;
         String buyMsg =
-            "You bought:\t" + numShares + " " + topSell.getSymbol() + "at " + price;
+            "You bought:\t" + numShares + " " + topSell.getSymbol() + "at " + price + " amt " + amtBuy;
 
         topBuy.getTrader().receiveMessage(buyMsg);
         topSell.getTrader().receiveMessage(sellMsg);
