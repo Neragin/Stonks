@@ -36,7 +36,7 @@ public class Brokerage
         {
             return -1;
         }
-        else if ( !(password.length() < 10 && password.length() > 2 ))
+        else if ( !(password.length() < 10 && password.length() > 2) )
         {
             return -2;
         }
@@ -79,10 +79,12 @@ public class Brokerage
         loggedTraders.remove(trader);
     }
 
+
     public void placeOrder(TradeOrder order)
     {
         exchange.placeOrder(order);
     }
+
 
     public void getQuote(String symbol, Trader trader)
     {
@@ -148,27 +150,39 @@ public class Brokerage
     }
 }
 
+/**
+ * Tries to register a new user with a given screen name
+ * and password;
+ *
+ * @param name     the screen name of the user.
+ * @param password the password for the user.
+ * @return 0 if successful, or an error code (a negative integer) if failed:<br>
+ * -1 -- invalid screen name (must be 4-10 chars)<br>
+ * -2 -- invalid password (must be 2-10 chars)<br>
+ * -3 -- the screen name is already taken.
+ * Tries to login a user with a given screen name and password;
+ * @param name     the screen name of the user.
+ * @param password the password for the user.
+ * @return 0 if successful, or an error code (a negative integer) if failed:<br>
+ * -1 -- screen name not found<br>
+ * -2 -- invalid password<br>
+ * -3 -- user is already logged in.
+ * Tries to login a user with a given screen name and password;
+ * @param name     the screen name of the user.
+ * @param password the password for the user.
+ * @return 0 if successful, or an error code (a negative integer) if failed:<br>
+ * -1 -- screen name not found<br>
+ * -2 -- invalid password<br>
+ * -3 -- user is already logged in.
+ */
 
-    /**
-     * Tries to register a new user with a given screen name
-     * and password;
-     *
-     * @param name     the screen name of the user.
-     * @param password the password for the user.
-     * @return 0 if successful, or an error code (a negative integer) if failed:<br>
-     * -1 -- invalid screen name (must be 4-10 chars)<br>
-     * -2 -- invalid password (must be 2-10 chars)<br>
-     * -3 -- the screen name is already taken.
-     */
-
-
-    /**
-     * Tries to login a user with a given screen name and password;
-     *
-     * @param name     the screen name of the user.
-     * @param password the password for the user.
-     * @return 0 if successful, or an error code (a negative integer) if failed:<br>
-     * -1 -- screen name not found<br>
-     * -2 -- invalid password<br>
-     * -3 -- user is already logged in.
-     */
+/**
+ * Tries to login a user with a given screen name and password;
+ *
+ * @param name     the screen name of the user.
+ * @param password the password for the user.
+ * @return 0 if successful, or an error code (a negative integer) if failed:<br>
+ * -1 -- screen name not found<br>
+ * -2 -- invalid password<br>
+ * -3 -- user is already logged in.
+ */

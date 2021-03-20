@@ -1,186 +1,229 @@
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
-import java.util.regex.*;
+import org.junit.Test;
 
-import org.junit.*;
+import java.util.LinkedList;
 
 import static org.junit.Assert.*;
-import junit.framework.JUnit4TestAdapter;
 
 /**
  * SafeTrade tests:
- *   TradeOrder
- *   PriceComparator
- *   Trader
- *   Brokerage
- *   StockExchange
- *   Stock
+ * TradeOrder
+ * PriceComparator
+ * Trader
+ * Brokerage
+ * StockExchange
+ * Stock
  *
  * @author Leo Xu
  * @author Niranjan Mathirajan
- * @version March 18 2021
  * @author Assignment: JM Chapter 19 - SafeTrade
- *
  * @author Sources: None
- *
+ * @version March 18 2021
  */
 public class JUSafeTradeTest
 {
     // --Test TradeOrder
     /**
      * TradeOrder tests:
-     *   TradeOrderConstructor - constructs TradeOrder and then compare toString
-     *   TradeOrderGetTrader - compares value returned to constructed value
-     *   TradeOrderGetSymbol - compares value returned to constructed value
-     *   TradeOrderIsBuy - compares value returned to constructed value
-     *   TradeOrderIsSell - compares value returned to constructed value
-     *   TradeOrderIsMarket - compares value returned to constructed value
-     *   TradeOrderIsLimit - compares value returned to constructed value
-     *   TradeOrderGetShares - compares value returned to constructed value
-     *   TradeOrderGetPrice - compares value returned to constructed value
-     *   TradeOrderSubtractShares - subtracts known value & compares result
-     *     returned by getShares to expected value
+     * TradeOrderConstructor - constructs TradeOrder and then compare toString
+     * TradeOrderGetTrader - compares value returned to constructed value
+     * TradeOrderGetSymbol - compares value returned to constructed value
+     * TradeOrderIsBuy - compares value returned to constructed value
+     * TradeOrderIsSell - compares value returned to constructed value
+     * TradeOrderIsMarket - compares value returned to constructed value
+     * TradeOrderIsLimit - compares value returned to constructed value
+     * TradeOrderGetShares - compares value returned to constructed value
+     * TradeOrderGetPrice - compares value returned to constructed value
+     * TradeOrderSubtractShares - subtracts known value & compares result
+     * returned by getShares to expected value
      */
-    private String symbol = "GGGL";
-    private boolean buyOrder = true;
-    private boolean marketOrder = true;
-    private int numShares = 123;
-    private int numToSubtract = 24;
-    private double price = 123.45;
+    private String  symbol        = "GGGL";
+    private boolean buyOrder      = true;
+    private boolean marketOrder   = true;
+    private int     numShares     = 123;
+    private int     numToSubtract = 24;
+    private double  price         = 123.45;
 
-    @Test
-    public void tradeOrderConstructor()
+
+    @Test public void tradeOrderConstructor()
     {
-        TradeOrder to = new TradeOrder( null, symbol, buyOrder, marketOrder,
-            numShares, price );
+        TradeOrder to = new TradeOrder(null,
+            symbol,
+            buyOrder,
+            marketOrder,
+            numShares,
+            price);
         String toStr = to.toString();
 
-        assertTrue( "<< Invalid TradeOrder Constructor >>",
-                    toStr.contains( "TradeOrder[Trader trader:null" )
-                        && toStr.contains( "java.lang.String symbol:" + symbol )
-                        && toStr.contains( "boolean buyOrder:" + buyOrder )
-                        && toStr.contains( "boolean marketOrder:" + marketOrder )
-                        && toStr.contains( "int numShares:" + numShares )
-                        && toStr.contains( "double price:" + price ) );
+        assertTrue("<< Invalid TradeOrder Constructor >>",
+            toStr.contains("TradeOrder[Trader trader:null") && toStr
+                .contains("java.lang.String symbol:" + symbol) && toStr
+                .contains("boolean buyOrder:" + buyOrder) && toStr
+                .contains("boolean marketOrder:" + marketOrder) && toStr
+                .contains("int numShares:" + numShares) && toStr
+                .contains("double price:" + price));
     }
 
-    @Test
-    public void TradeOrderToString()
+
+    @Test public void TradeOrderToString()
     {
-        TradeOrder to = new TradeOrder( null, symbol, buyOrder, marketOrder,
-            numShares, price );
-        assertNotNull( to.toString() );
+        TradeOrder to = new TradeOrder(null,
+            symbol,
+            buyOrder,
+            marketOrder,
+            numShares,
+            price);
+        assertNotNull(to.toString());
     }
 
-    @Test
-    public void tradeOrderGetTrader()
+
+    @Test public void tradeOrderGetTrader()
     {
-        TradeOrder to = new TradeOrder( null, symbol, buyOrder, marketOrder,
-            numShares, price );
-        assertNull( "<< TradeOrder: " + to.getTrader() + " should be null >>",
-                    to.getTrader() );
+        TradeOrder to = new TradeOrder(null,
+            symbol,
+            buyOrder,
+            marketOrder,
+            numShares,
+            price);
+        assertNull("<< TradeOrder: " + to.getTrader() + " should be null >>",
+            to.getTrader());
     }
 
-    @Test
-    public void tradeOrderGetSymbol()
+
+    @Test public void tradeOrderGetSymbol()
     {
-        TradeOrder to = new TradeOrder( null, symbol, buyOrder, marketOrder,
-            numShares, price );
-        assertEquals( "<< TradeOrder: " + to.getTrader() + " should be "
-            + symbol + " >>", symbol, to.getSymbol() );
+        TradeOrder to = new TradeOrder(null,
+            symbol,
+            buyOrder,
+            marketOrder,
+            numShares,
+            price);
+        assertEquals(
+            "<< TradeOrder: " + to.getTrader() + " should be " + symbol + " >>",
+            symbol,
+            to.getSymbol());
     }
 
-    @Test
-    public void tradeOrderIsBuy()
+
+    @Test public void tradeOrderIsBuy()
     {
-        TradeOrder to = new TradeOrder( null, symbol, buyOrder, marketOrder,
-            numShares, price );
+        TradeOrder to = new TradeOrder(null,
+            symbol,
+            buyOrder,
+            marketOrder,
+            numShares,
+            price);
 
-        assertTrue( "<< TradeOrder: " + to.isBuy() + " should be " + buyOrder
-            + " >>", to.isBuy() );
+        assertTrue("<< TradeOrder: " + to
+            .isBuy() + " should be " + buyOrder + " >>", to.isBuy());
     }
 
-    @Test
-    public void tradeOrderIsSell()
+
+    @Test public void tradeOrderIsSell()
     {
-        TradeOrder to = new TradeOrder( null, symbol, buyOrder, marketOrder,
-            numShares, price );
-        assertFalse( "<< TradeOrder: " + to.isSell() + " should be "
-            + !buyOrder + " >>", to.isSell() );
+        TradeOrder to = new TradeOrder(null,
+            symbol,
+            buyOrder,
+            marketOrder,
+            numShares,
+            price);
+        assertFalse("<< TradeOrder: " + to
+            .isSell() + " should be " + !buyOrder + " >>", to.isSell());
     }
 
-    @Test
-    public void tradeOrderIsMarket()
+
+    @Test public void tradeOrderIsMarket()
     {
-        TradeOrder to = new TradeOrder( null, symbol, buyOrder, marketOrder,
-            numShares, price );
-        assertTrue( "<< TradeOrder: " + to.isMarket() + " should be "
-            + marketOrder + " >>", to.isMarket() );
+        TradeOrder to = new TradeOrder(null,
+            symbol,
+            buyOrder,
+            marketOrder,
+            numShares,
+            price);
+        assertTrue("<< TradeOrder: " + to
+            .isMarket() + " should be " + marketOrder + " >>", to.isMarket());
     }
 
-    @Test
-    public void tradeOrderIsLimit()
+
+    @Test public void tradeOrderIsLimit()
     {
-        TradeOrder to = new TradeOrder( null, symbol, buyOrder, marketOrder,
-            numShares, price );
+        TradeOrder to = new TradeOrder(null,
+            symbol,
+            buyOrder,
+            marketOrder,
+            numShares,
+            price);
 
-        assertFalse( "<< TradeOrder: " + to.isLimit() + " should be "
-            + !marketOrder + ">>", to.isLimit() );
+        assertFalse("<< TradeOrder: " + to
+            .isLimit() + " should be " + !marketOrder + ">>", to.isLimit());
     }
 
-    @Test
-    public void tradeOrderGetShares()
+
+    @Test public void tradeOrderGetShares()
     {
-        TradeOrder to = new TradeOrder( null, symbol, buyOrder, marketOrder,
-            numShares, price );
-        assertTrue( "<< TradeOrder: " + to.getShares() + " should be "
-            + numShares + ">>", numShares == to.getShares()
-            || ( numShares - numToSubtract ) == to.getShares() );
+        TradeOrder to = new TradeOrder(null,
+            symbol,
+            buyOrder,
+            marketOrder,
+            numShares,
+            price);
+        assertTrue("<< TradeOrder: " + to
+                .getShares() + " should be " + numShares + ">>",
+            numShares == to.getShares() || (numShares - numToSubtract) == to
+                .getShares());
     }
 
-    @Test
-    public void tradeOrderGetPrice()
+
+    @Test public void tradeOrderGetPrice()
     {
-        TradeOrder to = new TradeOrder( null, symbol, buyOrder, marketOrder,
-            numShares, price );
-        assertEquals( "<< TradeOrder: " + to.getPrice() + " should be " + price
-            + ">>", price, to.getPrice(), 0.0 );
+        TradeOrder to = new TradeOrder(null,
+            symbol,
+            buyOrder,
+            marketOrder,
+            numShares,
+            price);
+        assertEquals(
+            "<< TradeOrder: " + to.getPrice() + " should be " + price + ">>",
+            price,
+            to.getPrice(),
+            0.0);
     }
 
-    @Test
-    public void tradeOrderSubtractShares()
+
+    @Test public void tradeOrderSubtractShares()
     {
-        TradeOrder to = new TradeOrder( null, symbol, buyOrder, marketOrder,
-            numShares, price );
-        to.subtractShares( numToSubtract );
-        assertEquals( "<< TradeOrder: subtractShares(" + numToSubtract
-            + ") should be " + ( numShares - numToSubtract ) + ">>", numShares
-            - numToSubtract, to.getShares() );
+        TradeOrder to = new TradeOrder(null,
+            symbol,
+            buyOrder,
+            marketOrder,
+            numShares,
+            price);
+        to.subtractShares(numToSubtract);
+        assertEquals(
+            "<< TradeOrder: subtractShares(" + numToSubtract + ") should be " + (numShares - numToSubtract) + ">>",
+            numShares - numToSubtract,
+            to.getShares());
     }
+
 
     // --Test TraderWindow Stub
-    @Test
-    public void traderWindowConstructor()
+    @Test public void traderWindowConstructor()
     {
-        TraderWindow tw = new TraderWindow( null );
-        assertNotNull( tw );
+        TraderWindow tw = new TraderWindow(null);
+        assertNotNull(tw);
     }
 
-    @Test
-    public void traderWindowShowMessage()
+
+    @Test public void traderWindowShowMessage()
     {
-        TraderWindow tw = new TraderWindow( null );
-        assertNotNull( tw );
-        tw.showMessage( null );
+        TraderWindow tw = new TraderWindow(null);
+        assertNotNull(tw);
+        tw.showMessage(null);
     }
 
     //  --Test PriceComparator
 
-    @Test
-    public void priceComparatorCompare()
+
+    @Test public void priceComparatorCompare()
     {
         PriceComparator pcNoParam = new PriceComparator();
         PriceComparator pcParamFalse = new PriceComparator(false);
@@ -192,61 +235,59 @@ public class JUSafeTradeTest
             true,
             false,
             69,
-            420.0 );
+            420.0);
 
         TradeOrder o2 = new TradeOrder(new Trader(broke, "adf", "asdf"),
             "BRUH",
             false,
             true,
             70,
-            500.25 );
+            500.25);
 
         TradeOrder o3 = new TradeOrder(new Trader(broke, "asda", "bragsduh"),
             "LMAO",
             true,
             false,
             12,
-            229.47 );
+            229.47);
 
         TradeOrder o4 = new TradeOrder(new Trader(broke, "bsob", "brudfah"),
             "UWU",
             false,
             true,
             1,
-            10 );
+            10);
 
         assertEquals(pcNoParam.compare(o2, o4), 0);
         assertEquals(pcParamFalse.compare(o3, o4), 1);
         assertEquals(pcParamFalse.compare(o2, o1), -1);
-        assertEquals(pcNoParam.compare(o3,o3), 0);
-        assertEquals(pcNoParam.compare(o1,o3), 19053, 0.00001);
-        assertEquals(pcParamFalse.compare(o1,o3), -19053, 0.00001);
+        assertEquals(pcNoParam.compare(o3, o3), 0);
+        assertEquals(pcNoParam.compare(o1, o3), 19053, 0.00001);
+        assertEquals(pcParamFalse.compare(o1, o3), -19053, 0.00001);
     }
 
 
     // --Test Trader
-    @Test
-    public void traderToStringTest()
+    @Test public void traderToStringTest()
     {
         Brokerage broke = new Brokerage(new StockExchange());
         Trader t = new Trader(broke, "joe", "183nco91hpdb");
         assertNotNull(t.toString());
     }
 
-    @Test
-    public void traderConstructorTest()
+
+    @Test public void traderConstructorTest()
     {
         Brokerage broke = new Brokerage(new StockExchange());
         Trader t = new Trader(broke, "joe", "183nco91hpdb");
-        assertEquals("Trader[Brokerage brokerage, java.lang.String screenName:joe, "
-            + "java.lang.String password:183nco91hpdb, "
-            + "TraderWindow myWindow:null,"
-            + " java.util.Queue mailbox:[]]", t.toString());
+        assertEquals(
+            "Trader[Brokerage brokerage, java.lang.String screenName:joe, " + "java.lang.String password:183nco91hpdb, " + "TraderWindow myWindow:null," + " java.util.Queue mailbox:[]]",
+            t.toString());
 
     }
 
-    @Test
-    public void traderCompareTo()
+
+    @Test public void traderCompareTo()
     {
         Brokerage broke = new Brokerage(new StockExchange());
         Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
@@ -256,8 +297,8 @@ public class JUSafeTradeTest
         assertTrue(t.compareTo(bruh) == 0);
     }
 
-    @Test
-    public void traderEquals()
+
+    @Test public void traderEquals()
     {
         Brokerage broke = new Brokerage(new StockExchange());
         Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
@@ -270,30 +311,30 @@ public class JUSafeTradeTest
         {
             t.equals(random);
         }
-        catch (ClassCastException e)
+        catch ( ClassCastException e )
         {
             assertTrue(true);
         }
     }
 
-    @Test
-    public void traderGetName()
+
+    @Test public void traderGetName()
     {
         Brokerage broke = new Brokerage(new StockExchange());
         Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
         assertEquals("Neragin", t.getName());
     }
 
-    @Test
-    public void traderGetPassword()
+
+    @Test public void traderGetPassword()
     {
         Brokerage broke = new Brokerage(new StockExchange());
         Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
         assertEquals("183nco91hpdb", t.getPassword());
     }
 
-    @Test
-    public void getQuote()
+
+    @Test public void getQuote()
     {
         Brokerage broke = new Brokerage(new StockExchange());
         Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
@@ -309,24 +350,17 @@ public class JUSafeTradeTest
 
     }
 
-
-
-
-
     // --Test Brokerage
 
     // TODO your tests here
-
 
     // --Test StockExchange
 
     // TODO your tests here
 
-
     // --Test Stock
 
     // TODO your tests here
-
 
     // Remove block comment below to run JUnit test in console
 /*

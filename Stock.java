@@ -1,18 +1,20 @@
-import java.util.*;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
 import java.text.DecimalFormat;
+import java.util.PriorityQueue;
 
 /**
  * Represents a stock in the SafeTrade project
  */
-public class Stock {
+public class Stock
+{
     public static DecimalFormat money = new DecimalFormat("0.00");
 
     private String stockSymbol;
     private String companyName;
     private double loPrice, hiPrice, lastPrice;
-    private int volume;
+    private int                       volume;
     private PriorityQueue<TradeOrder> buyOrders, sellOrders;
+
 
     /**
      * Constructs a new stock with a given symbol, company name, and starting price.
@@ -27,7 +29,8 @@ public class Stock {
      * @param name   - full company name.
      * @param price  - opening price for this stock.
      */
-    public Stock(String symbol, String name, double price) {
+    public Stock(String symbol, String name, double price)
+    {
         volume = 0;
         stockSymbol = symbol;
         companyName = name;
@@ -39,91 +42,116 @@ public class Stock {
 
     }
 
+
     /**
      * Returns a quote string for this stock.
      *
      * @return the quote for this stock.
      */
-    public String getQuote() {
-        String quote = companyName + " (" + stockSymbol + ")" + "\nPrice: " + getLastPrice() + "\thi: " + getHiPrice()
-                + "\tlo: " + getLoPrice() + "\tvol: " + getVolume() + "\n";
+    public String getQuote()
+    {
+        String quote =
+            companyName + " (" + stockSymbol + ")" + "\nPrice: " + getLastPrice() + "\thi: " + getHiPrice() + "\tlo: " + getLoPrice() + "\tvol: " + getVolume() + "\n";
 
         TradeOrder Ask = sellOrders.peek();
         TradeOrder Bid = sellOrders.peek();
 
-        String askString = Ask == null ? "Ask: none\t" : "Ask: " + Ask.getPrice() + " size: " + Ask.getShares() + "\t";
+        String askString = Ask == null ?
+            "Ask: none\t" :
+            "Ask: " + Ask.getPrice() + " size: " + Ask.getShares() + "\t";
 
-        String bidString = Bid == null ? "Bid: none" : "Bid: " + Bid.getPrice() + " size: " + Bid.getShares();
+        String bidString = Bid == null ?
+            "Bid: none" :
+            "Bid: " + Bid.getPrice() + " size: " + Bid.getShares();
 
         return quote + askString + bidString;
 
     }
+
 
     /**
      * Places a trading order for this stock.
      *
      * @param order - a trading order to be placed.
      */
-    public void placeOrder(TradeOrder order) {
+    public void placeOrder(TradeOrder order)
+    {
         String msg = "";
-        if (order != null && order.isLimit()) {
-            if (order.isSell()) {
-                msg = "New Order:\t" + "Sell " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
-                        + " shares at " + order.getPrice();
+        if ( order != null && order.isLimit() )
+        {
+            if ( order.isSell() )
+            {
+                msg = "New Order:\t" + "Sell " + order
+                    .getSymbol() + "(" + companyName + ")\n" + order
+                    .getShares() + " shares at " + order.getPrice();
                 sellOrders.add(order);
-            } else if (order.isBuy()) {
-                msg = "New Order:\t" + "Buy " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
-                        + " shares at " + order.getPrice();
-                buyOrders.add(order);
             }
-        } else if (order != null && order.isMarket()) {
-            if (order.isSell()) {
-                msg = "New Order:\t" + "Sell " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
-                        + " shares at market";
-                sellOrders.add(order);
-            } else if (order.isBuy()) {
-                msg = "New Order:\t" + "Buy " + order.getSymbol() + "(" + companyName + ")\n" + order.getShares()
-                        + " shares at market";
+            else if ( order.isBuy() )
+            {
+                msg = "New Order:\t" + "Buy " + order
+                    .getSymbol() + "(" + companyName + ")\n" + order
+                    .getShares() + " shares at " + order.getPrice();
                 buyOrders.add(order);
             }
         }
-        if (order != null)
+        else if ( order != null && order.isMarket() )
+        {
+            if ( order.isSell() )
+            {
+                msg = "New Order:\t" + "Sell " + order
+                    .getSymbol() + "(" + companyName + ")\n" + order
+                    .getShares() + " shares at market";
+                sellOrders.add(order);
+            }
+            else if ( order.isBuy() )
+            {
+                msg = "New Order:\t" + "Buy " + order
+                    .getSymbol() + "(" + companyName + ")\n" + order
+                    .getShares() + " shares at market";
+                buyOrders.add(order);
+            }
+        }
+        if ( order != null )
         {
             order.getTrader().receiveMessage(msg);
         }
         executeOrders();
     }
 
+
     /**
      * Executes as many pending orders as possible.
      */
-    protected void executeOrders() {
+    protected void executeOrders()
+    {
         TradeOrder topSell = sellOrders.peek();
         TradeOrder topBuy = buyOrders.peek();
 
 //        while (topSell != null && topBuy != null && !(topBuy.isLimit() && topSell.isLimit() && topSell.getPrice() > topBuy.getPrice())) {
-            if ( topSell != null && topBuy != null && !(topBuy.isLimit() && topSell.isLimit() && topSell.getPrice() > topBuy.getPrice()) )
+        if ( topSell != null && topBuy != null && !(topBuy.isLimit() && topSell
+            .isLimit() && topSell.getPrice() > topBuy.getPrice()) )
+        {
+            if ( topSell.isLimit() && topBuy.isLimit() && topBuy
+                .getPrice() >= topSell.getPrice() )
             {
-                if ( topSell.isLimit() && topBuy.isLimit() && topBuy
-                    .getPrice() >= topSell.getPrice() )
-                {
-                    execution(topSell, topBuy, topSell.getPrice());
-                }
-                else if ( topSell.isMarket() && topBuy.isMarket() )
-                {
-                    execution(topSell, topBuy, lastPrice);
-                }
-                else if ( topSell.isLimit() && topBuy.isMarket() )
-                {
-                    execution(topSell, topBuy, topSell.getPrice());
-                }
-                else if ( topBuy.isLimit() && topSell.isMarket() )
-                {
-                    execution(topSell, topBuy, topBuy.getPrice());
-                }
+                execution(topSell, topBuy, topSell.getPrice());
             }
+            else if ( topSell.isMarket() && topBuy.isMarket() )
+            {
+                execution(topSell, topBuy, lastPrice);
+            }
+            else if ( topSell.isLimit() && topBuy.isMarket() )
+            {
+                execution(topSell, topBuy, topSell.getPrice());
+            }
+            else if ( topBuy.isLimit() && topSell.isMarket() )
+            {
+                execution(topSell, topBuy, topBuy.getPrice());
+            }
+        }
 //        }
     }
+
 
     /**
      * Helper function to carry out an order. Sends message, updates day prices,
@@ -133,7 +161,8 @@ public class Stock {
      * @param topBuy  - Buy order with the highest price
      * @param price   - Actual price set for the transaction
      */
-    public void execution(TradeOrder topSell, TradeOrder topBuy, double price) {
+    public void execution(TradeOrder topSell, TradeOrder topBuy, double price)
+    {
         int numShares = Math.min(topSell.getShares(), topBuy.getShares());
         money.applyPattern(Double.toString(price));
         double amtSell = topSell.getShares();
@@ -142,10 +171,10 @@ public class Stock {
         money.applyPattern(Double.toString(amtSell));
         money.applyPattern(Double.toString(amtBuy));
 
-        String sellMsg =
-            "You sold:\t" + numShares + " " + topSell.getSymbol() + "at " + price + " amt " + amtSell;
-        String buyMsg =
-            "You bought:\t" + numShares + " " + topSell.getSymbol() + "at " + price + " amt " + amtBuy;
+        String sellMsg = "You sold:\t" + numShares + " " + topSell
+            .getSymbol() + "at " + price + " amt " + amtSell;
+        String buyMsg = "You bought:\t" + numShares + " " + topSell
+            .getSymbol() + "at " + price + " amt " + amtBuy;
 
         topBuy.getTrader().receiveMessage(buyMsg);
         topSell.getTrader().receiveMessage(sellMsg);
@@ -158,12 +187,17 @@ public class Stock {
         topSell.subtractShares(numShares);
         topBuy.subtractShares(numShares);
 
-        if (topSell.getShares() == 0 && topBuy.getShares() == 0) {
+        if ( topSell.getShares() == 0 && topBuy.getShares() == 0 )
+        {
             buyOrders.poll();
             sellOrders.poll();
-        } else if (topSell.getShares() == 0) {
+        }
+        else if ( topSell.getShares() == 0 )
+        {
             sellOrders.poll();
-        } else if (topBuy.getShares() == 0) {
+        }
+        else if ( topBuy.getShares() == 0 )
+        {
             buyOrders.poll();
         }
     }
@@ -172,37 +206,54 @@ public class Stock {
     // The following are for test purposes only
     //
 
-    protected String getStockSymbol() {
+
+    protected String getStockSymbol()
+    {
         return stockSymbol;
     }
 
-    protected String getCompanyName() {
+
+    protected String getCompanyName()
+    {
         return companyName;
     }
 
-    protected double getLoPrice() {
+
+    protected double getLoPrice()
+    {
         return loPrice;
     }
 
-    protected double getHiPrice() {
+
+    protected double getHiPrice()
+    {
         return hiPrice;
     }
 
-    protected double getLastPrice() {
+
+    protected double getLastPrice()
+    {
         return lastPrice;
     }
 
-    protected int getVolume() {
+
+    protected int getVolume()
+    {
         return volume;
     }
 
-    protected PriorityQueue<TradeOrder> getBuyOrders() {
+
+    protected PriorityQueue<TradeOrder> getBuyOrders()
+    {
         return buyOrders;
     }
 
-    protected PriorityQueue<TradeOrder> getSellOrders() {
+
+    protected PriorityQueue<TradeOrder> getSellOrders()
+    {
         return sellOrders;
     }
+
 
     /**
      * <p>
@@ -213,16 +264,22 @@ public class Stock {
      *
      * @return a string representation of this Stock.
      */
-    public String toString() {
+    public String toString()
+    {
         String str = this.getClass().getName() + "[";
         String separator = "";
 
         Field[] fields = this.getClass().getDeclaredFields();
 
-        for (Field field : fields) {
-            try {
-                str += separator + field.getType().getName() + " " + field.getName() + ":" + field.get(this);
-            } catch (IllegalAccessException ex) {
+        for ( Field field : fields )
+        {
+            try
+            {
+                str += separator + field.getType().getName() + " " + field
+                    .getName() + ":" + field.get(this);
+            }
+            catch ( IllegalAccessException ex )
+            {
                 System.out.println(ex);
             }
 
