@@ -134,7 +134,6 @@ public class TradeOrder
         if ( numShares < shares)
         {
             throw new IllegalArgumentException();
-
         }
         else
         {

@@ -27,7 +27,7 @@ public class Trader
         this.brokerage = brokerage;
         this.screenName = name;
         this.password = pswd;
-        this.mailbox = new LinkedList<String>();
+        this.mailbox = new LinkedList<>();
 
     }
 

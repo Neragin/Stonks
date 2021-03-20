@@ -34,8 +34,8 @@ public class Stock {
         loPrice = hiPrice = lastPrice = price;
         PriceComparator asc = new PriceComparator();
         PriceComparator desc = new PriceComparator(false);
-        buyOrders = new PriorityQueue<TradeOrder>(2, desc);
-        sellOrders = new PriorityQueue<TradeOrder>(2, asc);
+        buyOrders = new PriorityQueue<>(2, desc);
+        sellOrders = new PriorityQueue<>(2, asc);
 
     }
 
@@ -124,7 +124,7 @@ public class Stock {
      * @param price   - Actual price set for the transaction
      */
     public void execution(TradeOrder topSell, TradeOrder topBuy, double price) {
-        int numShares = topSell.getShares() > topBuy.getShares() ? topBuy.getShares() : topSell.getShares();
+        int numShares = Math.min(topSell.getShares(), topBuy.getShares());
         money.applyPattern(Double.toString(price));
         double amtSell = topSell.getShares();
         double amtBuy = topBuy.getShares();
@@ -141,8 +141,8 @@ public class Stock {
         topSell.getTrader().receiveMessage(sellMsg);
 
         volume += numShares;
-        hiPrice = price > getHiPrice() ? price : getHiPrice();
-        loPrice = price < getLoPrice() ? price : getLoPrice();
+        hiPrice = Math.max(price, getHiPrice());
+        loPrice = Math.min(price, getLoPrice());
         lastPrice = price;
 
         topSell.subtractShares(numShares);
