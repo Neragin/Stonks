@@ -52,10 +52,12 @@ public class StockExchange
     {
         if ( !listedStocks.containsKey(order.getSymbol()) )
         {
-
-            System.out.println(order.getSymbol() + " not found");
+            order.getTrader().receiveMessage(order.getSymbol() + " not found");
         }
-        listedStocks.get(order.getSymbol()).placeOrder(order);
+        else
+        {
+            listedStocks.get(order.getSymbol()).placeOrder(order);
+        }
     }
 
 

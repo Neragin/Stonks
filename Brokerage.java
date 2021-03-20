@@ -32,11 +32,11 @@ public class Brokerage
         {
             return -3;
         }
-        else if ( name.length() > 4 && name.length() < 10 )
+        else if ( !(name.length() > 4 && name.length() < 10) )
         {
             return -1;
         }
-        else if ( password.length() < 10 && password.length() > 2 )
+        else if ( !(password.length() < 10 && password.length() > 2 ))
         {
             return -2;
         }
@@ -53,13 +53,13 @@ public class Brokerage
         Trader trader = traders.get(name);
         if ( trader == null )
         {
-        return -1;
+            return -1;
         }
+
         else if ( loggedTraders.contains(trader) )
         {
             return -3;
         }
-
         else if ( !trader.getPassword().equals(password) )
         {
             return -2;
