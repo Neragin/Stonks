@@ -101,18 +101,28 @@ public class Stock {
         TradeOrder topSell = sellOrders.peek();
         TradeOrder topBuy = buyOrders.peek();
 
-        while (topSell != null && topBuy != null && !(topBuy.isLimit() && topSell.isLimit() && topSell.getPrice() > topBuy.getPrice())) {
-
-            if (topSell.isLimit() && topBuy.isLimit() && topBuy.getPrice() >= topSell.getPrice()) {
-                execution(topSell, topBuy, topSell.getPrice());
-            } else if (topSell.isMarket() && topBuy.isMarket()) {
-                execution(topSell, topBuy, lastPrice);
-            } else if (topSell.isLimit() && topBuy.isMarket()) {
-                execution(topSell, topBuy, topSell.getPrice());
-            } else if (topBuy.isLimit() && topSell.isMarket()) {
-                execution(topSell, topBuy, topBuy.getPrice());
+//        while (topSell != null && topBuy != null && !(topBuy.isLimit() && topSell.isLimit() && topSell.getPrice() > topBuy.getPrice())) {
+            if ( topSell != null && topBuy != null && !(topBuy.isLimit() && topSell.isLimit() && topSell.getPrice() > topBuy.getPrice()) )
+            {
+                if ( topSell.isLimit() && topBuy.isLimit() && topBuy
+                    .getPrice() >= topSell.getPrice() )
+                {
+                    execution(topSell, topBuy, topSell.getPrice());
+                }
+                else if ( topSell.isMarket() && topBuy.isMarket() )
+                {
+                    execution(topSell, topBuy, lastPrice);
+                }
+                else if ( topSell.isLimit() && topBuy.isMarket() )
+                {
+                    execution(topSell, topBuy, topSell.getPrice());
+                }
+                else if ( topBuy.isLimit() && topSell.isMarket() )
+                {
+                    execution(topSell, topBuy, topBuy.getPrice());
+                }
             }
-        }
+//        }
     }
 
     /**
