@@ -293,8 +293,8 @@ public class JUSafeTradeTest
         Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
         Trader j = new Trader(broke, "Dhanish", "183nco91hpdb");
         Trader bruh = new Trader(broke, "Neragin", "a9odihufpiadubfai");
-        assertFalse(t.compareTo(j) == 0);
-        assertTrue(t.compareTo(bruh) == 0);
+        assertNotEquals(0, t.compareTo(j));
+        assertEquals(0, t.compareTo(bruh));
     }
 
 
@@ -304,9 +304,9 @@ public class JUSafeTradeTest
         Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
         Trader j = new Trader(broke, "Dhanish", "183nco91hpdb");
         Trader bruh = new Trader(broke, "Neragin", "a9odihufpiadubfai");
-        LinkedList<Integer> random = new LinkedList<Integer>();
-        assertFalse(t.equals(j));
-        assertTrue(t.equals(bruh));
+        LinkedList<Integer> random = new LinkedList<>();
+        assertNotEquals(t, j);
+        assertEquals(t, bruh);
         try
         {
             t.equals(random);
@@ -342,7 +342,7 @@ public class JUSafeTradeTest
         t.openWindow();
         t.getQuote("GGGL");
         assertTrue(t.hasMessages());
-        assertTrue(!(t.mailbox().peek().contains("not found")));
+        assertFalse(t.mailbox().peek().contains("not found"));
         t.openWindow();
         t.getQuote("oihaopsizfbdiadsuyfh");
         assertTrue(t.hasMessages());
