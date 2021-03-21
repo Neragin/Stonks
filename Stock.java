@@ -126,7 +126,10 @@ public class Stock
     {
         TradeOrder topSell = sellOrders.peek();
         TradeOrder topBuy = buyOrders.peek();
-        while (topSell != null && topBuy != null && !(topBuy.isLimit() && topSell.isLimit() && topSell.getPrice() > topBuy.getPrice())) {
+        while ( topSell != null && topBuy != null && !(topBuy
+            .isLimit() && topSell.isLimit() && topSell.getPrice() > topBuy
+            .getPrice()) )
+        {
 
             if ( topSell.isLimit() && topBuy.isLimit() && topBuy
                 .getPrice() >= topSell.getPrice() )
@@ -164,11 +167,12 @@ public class Stock
         int numShares = Math.min(topSell.getShares(), topBuy.getShares());
 
         String sellMsg = "You sold:\t" + numShares + " " + topSell
-            .getSymbol() + " at " +  money.format(price) + " amt " + money.format(price * numShares);
+            .getSymbol() + " at " + money.format(price) + " amt " + money
+            .format(price * numShares);
 
         String buyMsg = "You bought:\t" + numShares + " " + topSell
-            .getSymbol() + " at " + money.format(price)  + " amt " + money.format(price * numShares);
-
+            .getSymbol() + " at " + money.format(price) + " amt " + money
+            .format(price * numShares);
 
         topBuy.getTrader().receiveMessage(buyMsg);
         topSell.getTrader().receiveMessage(sellMsg);

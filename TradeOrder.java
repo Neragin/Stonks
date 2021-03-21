@@ -6,8 +6,8 @@ import java.lang.reflect.Field;
  */
 public class TradeOrder
 {
-    private Trader trader;
-    private String symbol;
+    private Trader  trader;
+    private String  symbol;
     private boolean buyOrder;
     private boolean marketOrder;
     private int     numShares;
@@ -98,9 +98,9 @@ public class TradeOrder
 
 
     /**
-     *     Returns the price per share for this trade order (used by a limit order).
+     * Returns the price per share for this trade order (used by a limit order).
      *
-     * @return  the price per share for this trade order.
+     * @return the price per share for this trade order.
      */
     public double getPrice()
     {
@@ -111,7 +111,7 @@ public class TradeOrder
     /**
      * Returns true if this is a market order; otherwise returns false.
      *
-     * @return  true if this is a market order; false otherwise.
+     * @return true if this is a market order; false otherwise.
      */
     public boolean isMarket()
     {
@@ -122,16 +122,17 @@ public class TradeOrder
     /**
      * Returns true if this is a limit order; otherwise returns false.
      *
-     * @return  true if this is a limit order; false otherwise.
+     * @return true if this is a limit order; false otherwise.
      */
     public boolean isLimit()
     {
         return !marketOrder;
     }
 
+
     public void subtractShares(int shares)
     {
-        if ( numShares < shares)
+        if ( numShares < shares )
         {
             throw new IllegalArgumentException();
 
