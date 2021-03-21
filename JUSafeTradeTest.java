@@ -352,8 +352,54 @@ public class JUSafeTradeTest
 
     // --Test Brokerage
 
-    // TODO your tests here
 
+    // TODO your tests here
+    @Test public void brokerageAddUser()
+    {
+        Brokerage brokerer = new Brokerage(new StockExchange());
+        assertEquals(-1, brokerer.addUser("a", "aaaaa"));
+        assertEquals(-1, brokerer.addUser("aaaaaaaaaaaaaaaa", "aaaaaa"));
+        assertEquals(-2, brokerer.addUser("aaaaa", "a"));
+        assertEquals(-2, brokerer.addUser("aaaaa", "aaaaaaaaaaaaaaaaaaa"));
+        assertEquals(0, brokerer.addUser("aaaaa", "aaaaa"));
+        assertEquals(-3, brokerer.addUser("aaaaa", "aaaaa"));
+    }
+
+
+    @Test public void brokerageLogout()
+    {
+        Brokerage brokerman = new Brokerage(new StockExchange());
+        brokerman.addUser("aaaaaa", "aaaaa");
+        brokerman.login("aaaaaa", "aaaaa");
+        brokerman.logout(brokerman.getTraders().get("aaaaaa"));
+        assertFalse(brokerman.getLoggedTraders()
+            .contains(new Trader(brokerman, "aaaaaa", "aaaaaa")));
+
+    }
+
+
+    @Test public void brokerageLogin()
+    {
+        Brokerage broking = new Brokerage(new StockExchange());
+        assertEquals(-1, broking.login("abcde", "abcde"));
+        broking.addUser("abcde", "abcde");
+        assertEquals(-2, broking.login("abcde", "abcd"));
+        broking.login("abcde", "abcde");
+        assertEquals(-3, broking.login("abcde", "abcde"));
+        broking.addUser("edfge", "edfge");
+        assertEquals(0, broking.login("edfge", "edfge"));
+    }
+
+
+    @Test public void brokeragePlaceOrder()
+    {
+        Brokerage broke = new Brokerage(new StockExchange());
+        Trader trader = new Trader(broke, "aaaaaa", "aaaaaa");
+        TradeOrder order = new TradeOrder(trader, symbol, true, true, 15, 10);
+        broke.placeOrder(order);
+        assertTrue(trader.hasMessages());
+
+    }
     // --Test StockExchange
 
     // TODO your tests here
