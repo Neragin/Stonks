@@ -3,6 +3,10 @@ import java.lang.reflect.Field;
 /**
  * Represents a buy or sell order for trading a given number of shares of a
  * specified stock.
+ *  @author Niranjan Mathirajan
+ * @author Leo Xu
+ *
+ * @version March 22, 2021
  */
 public class TradeOrder
 {
@@ -15,11 +19,13 @@ public class TradeOrder
 
 
     /**
-     * Constructs a new TradeOrder for a given trader, stock symbol, a number of shares, and other parameters.
+     * Constructs a new TradeOrder for a given trader,
+     * stock symbol, a number of shares, and other parameters.
      *
      * @param trader      a trader who placed this order.
      * @param symbol      stock symbol.
-     * @param buyOrder    if true this is a buy order; otherwise this is a sell order.
+     * @param buyOrder    if true this is a
+     *  buy order; otherwise this is a sell order.
      * @param marketOrder if true this is a market order; otherwise this is a
      *                    limit order.
      * @param numShares   the number of shares to be traded.
@@ -130,6 +136,12 @@ public class TradeOrder
     }
 
 
+    /**
+     *
+     * Subtracts shares from the current
+     * no. of shares in the current order
+     * @param shares - no. of shares to subtract
+     */
     public void subtractShares(int shares)
     {
         if ( numShares < shares )

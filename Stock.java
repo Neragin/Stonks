@@ -4,25 +4,40 @@ import java.util.PriorityQueue;
 
 /**
  * Represents a stock in the SafeTrade project
+ *
+ * @author Niranjan Mathirajan
+ * @author Leo Xu
+ *
+ * @version March 22, 2021
  */
 public class Stock
 {
-    public static DecimalFormat money = new DecimalFormat("0.00");
+
+    private static DecimalFormat money = new DecimalFormat("0.00");
 
     private String stockSymbol;
     private String companyName;
-    private double loPrice, hiPrice, lastPrice;
+    private double loPrice;
+    private double hiPrice;
+    private double lastPrice;
     private int                       volume;
-    private PriorityQueue<TradeOrder> buyOrders, sellOrders;
+    private PriorityQueue<TradeOrder> buyOrders;
+    private PriorityQueue<TradeOrder> sellOrders;
 
 
     /**
-     * Constructs a new stock with a given symbol, company name, and starting price.
-     * Sets low price, high price, and last price to the same opening price. Sets
-     * "day" volume to zero. Initializes a priority qieue for sell orders to an
-     * empty PriorityQueue with a PriceComparator configured for comparing orders in
-     * ascending order; initializes a priority qieue for buy orders to an empty
-     * PriorityQueue with a PriceComparator configured for comparing orders in
+     * Constructs a new stock with
+     * a given symbol, company name, and starting price.
+     * Sets low price, high price,
+     * and last price to the same opening price. Sets
+     * "day" volume to zero.
+     * Initializes a priority qieue for sell orders to an
+     * empty PriorityQueue with
+     * a PriceComparator configured for comparing orders in
+     * ascending order; initializes a
+     * priority qieue for buy orders to an empty
+     * PriorityQueue with a
+     * PriceComparator configured for comparing orders in
      * descending order.
      *
      * @param symbol - the stock symbol.
@@ -34,7 +49,9 @@ public class Stock
         volume = 0;
         stockSymbol = symbol;
         companyName = name;
-        loPrice = hiPrice = lastPrice = price;
+        loPrice = price;
+        hiPrice = price;
+        lastPrice = price;
         PriceComparator asc = new PriceComparator();
         PriceComparator desc = new PriceComparator(false);
         buyOrders = new PriorityQueue<>(2, desc);
@@ -51,18 +68,20 @@ public class Stock
     public String getQuote()
     {
         String quote =
-            companyName + " (" + stockSymbol + ")" + "\nPrice: " + getLastPrice() + "\thi: " + getHiPrice() + "\tlo: " + getLoPrice() + "\tvol: " + getVolume() + "\n";
+            companyName + " (" + stockSymbol + ")" +
+                "\nPrice: " + getLastPrice() + "\thi: " + getHiPrice() +
+                "\tlo: " + getLoPrice() + "\tvol: " + getVolume() + "\n";
 
-        TradeOrder Ask = sellOrders.peek();
-        TradeOrder Bid = buyOrders.peek();
+        TradeOrder ask = sellOrders.peek();
+        TradeOrder bid = buyOrders.peek();
 
-        String askString = Ask == null ?
+        String askString = ask == null ?
             "Ask: none\t" :
-            "Ask: " + Ask.getPrice() + " size: " + Ask.getShares() + "\t";
+            "Ask: " + ask.getPrice() + " size: " + ask.getShares() + "\t";
 
-        String bidString = Bid == null ?
+        String bidString = bid == null ?
             "Bid: none" :
-            "Bid: " + Bid.getPrice() + " size: " + Bid.getShares();
+            "Bid: " + bid.getPrice() + " size: " + bid.getShares();
 
         return quote + askString + bidString;
 
@@ -83,14 +102,16 @@ public class Stock
             {
                 msg = "New Order:\t" + "Sell " + order
                     .getSymbol() + "(" + companyName + ")\n" + order
-                    .getShares() + " shares at $" + order.getPrice();
+                    .getShares() + " shares at $" +
+                    money.format(order.getPrice());
                 sellOrders.add(order);
             }
             else if ( order.isBuy() )
             {
                 msg = "New Order:\t" + "Buy " + order
                     .getSymbol() + "(" + companyName + ")\n" + order
-                    .getShares() + " shares at $" + order.getPrice();
+                    .getShares() + " shares at $" +
+                    money.format(order.getPrice());
                 buyOrders.add(order);
             }
         }
@@ -206,48 +227,78 @@ public class Stock
     //
 
 
+    /**
+     *
+     * Returns a stock's symbol
+     * @return A stock's symbol
+     */
     protected String getStockSymbol()
     {
         return stockSymbol;
     }
 
-
+    /**
+     *
+     * Returns the company name
+     * @return the company name
+     */
     protected String getCompanyName()
     {
         return companyName;
     }
 
-
+    /**
+     * Returns a stock's lowest price
+     * @return lowest price
+     */
     protected double getLoPrice()
     {
         return loPrice;
     }
 
-
+    /**
+     * Returns a stock's highest price
+     * @return highest price
+     */
     protected double getHiPrice()
     {
         return hiPrice;
     }
 
-
+    /**
+     * Returns a stock's last price
+     * @return last price
+     */
     protected double getLastPrice()
     {
         return lastPrice;
     }
 
-
+    /**
+     * Returns a stock's daily volume
+     * @return daily volume
+     */
     protected int getVolume()
     {
         return volume;
     }
 
-
+    /**
+     *
+     * Returns priority queue of buy orders
+     * @return buy orders priority queue
+     */
     protected PriorityQueue<TradeOrder> getBuyOrders()
     {
         return buyOrders;
     }
 
 
+    /**
+     *
+     * Returns priority queue of sell orders
+     * @return sell orders priority queue
+     */
     protected PriorityQueue<TradeOrder> getSellOrders()
     {
         return sellOrders;
@@ -257,7 +308,8 @@ public class Stock
     /**
      * <p>
      * A generic toString implementation that uses reflection to print names and
-     * values of all fields <em>declared in this class</em>. Note that superclass
+     * values of all fields <em>
+     * declared in this class</em>. Note that superclass
      * fields are left out of this implementation.
      * </p>
      *

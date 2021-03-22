@@ -4,18 +4,24 @@ import java.util.Queue;
 
 /**
  * Represents a stock trader.
+ * @author Niranjan Mathirajan
+ * @author Leo Xu
+ *
+ * @version March 22, 2021
  */
 public class Trader
     implements Comparable<Trader>
 {
     private Brokerage brokerage;
-    private String    screenName, password;
+    private String screenName;
+    private String password;
     private TraderWindow  myWindow;
     private Queue<String> mailbox;
 
 
     /**
-     * Constructs a new trader, affiliated with a given brockerage, with a given
+     * Constructs a new trader,
+     * affiliated with a given brockerage, with a given
      * screen name and password.
      *
      * @param brokerage - the brokerage for this trader.
@@ -33,7 +39,8 @@ public class Trader
 
 
     /**
-     * Compares this trader to another by comparing their screen names case blind.
+     * Compares this trader to another
+     * by comparing their screen names case blind.
      *
      * @param other - the reference to a trader with which to compare.
      * @return the result of the comparison of this trader and other.
@@ -113,7 +120,8 @@ public class Trader
 
     /**
      * Creates a new TraderWindow for this trader and saves a reference to it in
-     * myWindow. Removes and displays all the messages, if any, from this trader's
+     * myWindow. Removes and
+     * displays all the messages, if any, from this trader's
      * mailbox by calling myWindow.showMessage(msg) for each message.
      */
     public void openWindow()
@@ -127,7 +135,8 @@ public class Trader
 
 
     /**
-     * Places a given order with the brokerage by calling brokerage's placeOrder.
+     * Places a given order with the
+     *  brokerage by calling brokerage's placeOrder.
      *
      * @param order - a trading order to be placed.
      */
@@ -138,8 +147,10 @@ public class Trader
 
 
     /**
-     * Logs out this trader. Calls brokerage's logout for this trader. Sets myWindow
-     * to null (this method is called from a TraderWindow's window listener when the
+     * Logs out this trader.
+     * Calls brokerage's logout for this trader. Sets myWindow
+     * to null (this method is
+     * called from a TraderWindow's window listener when the
      * "close window" button is clicked).
      */
     public void quit()
@@ -150,9 +161,13 @@ public class Trader
 
 
     /**
-     * Adds msg to this trader's mailbox and displays all messages. If this trader
-     * is logged in (myWindow is not null) removes and shows all the messages in the
-     * mailbox by calling myWindow.showMessage(msg) for each msg in the mailbox.
+     * Adds msg to this trader's mailbox
+     * and displays all messages. If this trader
+     * is logged in (myWindow is not null)
+     * removes and shows all the messages in the
+     * mailbox by calling myWindow.showMessage(msg)
+     * for each msg in the mailbox.
+     * @param msg - message to recieve
      */
     public void receiveMessage(String msg)
     {
@@ -170,6 +185,12 @@ public class Trader
     //
     // The following are for test purposes only
     //
+
+    /**
+     *
+     * Gets a trader's mailbox for testing
+     * @return The trader's mailbox
+     */
     protected Queue<String> mailbox()
     {
         return mailbox;
@@ -179,7 +200,8 @@ public class Trader
     /**
      * <p>
      * A generic toString implementation that uses reflection to print names and
-     * values of all fields <em>declared in this class</em>. Note that superclass
+     * values of all fields <em>declared in this class</em>. Note
+     * that superclass
      * fields are left out of this implementation.
      * </p>
      *
@@ -197,11 +219,15 @@ public class Trader
             try
             {
                 if ( field.getType().getName().equals("Brokerage") )
+                {
                     str += separator + field.getType().getName() + " " + field
                         .getName();
+                }
                 else
+                {
                     str += separator + field.getType().getName() + " " + field
                         .getName() + ":" + field.get(this);
+                }
             }
             catch ( IllegalAccessException ex )
             {

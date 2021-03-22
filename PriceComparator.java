@@ -1,5 +1,10 @@
 /**
  * A price comparator for trade orders.
+ *
+ * @author Niranjan Mathirajan
+ * @author Leo Xu
+ *
+ * @version March 22, 2021
  */
 public class PriceComparator
     implements java.util.Comparator<TradeOrder>
@@ -8,7 +13,8 @@ public class PriceComparator
 
 
     /**
-     * Constructs a price comparator that compares two orders in ascending order.
+     * Constructs a price comparator
+     * that compares two orders in ascending order.
      * Sets the private boolean ascending flag to true.
      */
     public PriceComparator()
@@ -21,6 +27,8 @@ public class PriceComparator
      * Constructs a price comparator that compares two orders in ascending or
      * descending order. The order of comparison depends on the value of a given
      * parameter. Sets the private boolean ascending flag to asc.
+     *
+     * @param asc - Whether or not to compare in ascending order
      */
     public PriceComparator(boolean asc)
     {

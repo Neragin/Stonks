@@ -276,15 +276,6 @@ public class JUSafeTradeTest
     }
 
 
-    @Test public void traderConstructorTest()
-    {
-        Brokerage broke = new Brokerage(new StockExchange());
-        Trader t = new Trader(broke, "joe", "183nco91hpdb");
-        assertEquals(
-            "Trader[Brokerage brokerage, java.lang.String screenName:joe, " + "java.lang.String password:183nco91hpdb, " + "TraderWindow myWindow:null," + " java.util.Queue mailbox:[]]",
-            t.toString());
-
-    }
 
 
     @Test public void traderCompareTo()
@@ -334,21 +325,84 @@ public class JUSafeTradeTest
     }
 
 
-    @Test public void getQuote()
+    @Test public void traderGetQuote()
     {
         Brokerage broke = new Brokerage(new StockExchange());
         Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
         assertEquals("183nco91hpdb", t.getPassword());
-        t.openWindow();
-        t.getQuote("GGGL");
-        assertTrue(t.hasMessages());
-        assertFalse(t.mailbox().peek().contains("not found"));
-        t.openWindow();
-        t.getQuote("oihaopsizfbdiadsuyfh");
-        assertTrue(t.hasMessages());
+        t.getQuote("DS");
         assertTrue(t.mailbox().peek().contains("not found"));
 
     }
+
+    @Test public void traderHasMessages()
+    {
+        Brokerage broke = new Brokerage(new StockExchange());
+        Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
+        t.getQuote("DS");
+        assertTrue(t.hasMessages());
+    }
+
+    @Test public void traderOpenWindow()
+    {
+        Brokerage broke = new Brokerage(new StockExchange());
+        Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
+        t.openWindow();
+        t.getQuote("DS");
+        assertFalse(t.hasMessages());
+    }
+
+    @Test public void traderPlaceOrder()
+    {
+        StockExchange s = new StockExchange();
+        Brokerage broke = new Brokerage(s);
+        Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
+        TradeOrder o = new TradeOrder(t, "GGGL", true, false, 100, 10.0);
+        t.placeOrder(o);
+        assertEquals(t.mailbox().peek(), "GGGL not found");
+        s.listStock("GGGL", "Giggle.com", 15.00);
+        t.placeOrder(o);
+        t.mailbox().remove();
+        assertEquals(t.mailbox().peek(), "New Order:\tBuy GGGL(Giggle.com)\n100 shares at $10.00");
+    }
+
+    @Test public void traderQuit()
+    {
+        Brokerage broke = new Brokerage(new StockExchange());
+        Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
+        t.openWindow();
+        t.quit();
+        t.getQuote("DS");
+        assertTrue(t.hasMessages());
+    }
+
+    @Test public void traderRecieveMessage()
+    {
+        Brokerage broke = new Brokerage(new StockExchange());
+        Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
+        t.receiveMessage("bruh");
+        assertEquals(t.mailbox().peek(), "bruh");
+    }
+    @Test public void traderMailbox()
+    {
+        Brokerage broke = new Brokerage(new StockExchange());
+        Trader t = new Trader(broke, "Neragin", "183nco91hpdb");
+        assertEquals(t.mailbox(), new LinkedList<String>());
+    }
+
+//    @Test public void StockExecuteOrders()
+//    {
+//        StockExchange s = new StockExchange();
+//        s.listStock("GGGL", "Giggle.com", 15.00);
+//        Brokerage broke = new Brokerage(s);
+//        Trader buyer = new Trader(broke, "Neragin", "183nco91hpdb");
+//        Trader seller = new Trader(broke, "Leo", "oadhfoid")
+//        TradeOrder buy = new TradeOrder(buyer, "GGGL", true, false, 100, 10.0);
+//        TradeOrder sell = new TradeOrder(seller, "GGGL", true, false, 100, 9.0);
+//        buyer.placeOrder(buy);
+//        seller.placeOrder(sell);
+//        assertEquals(t.mailbox().peek(), "GGGL not found");
+//    }
 
     // --Test Brokerage
 
